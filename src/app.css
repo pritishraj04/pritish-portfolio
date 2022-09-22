@@ -1,0 +1,83 @@
+/* Imports */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
+
+/* Variables */
+:root {
+  /* background */
+  --clr-bg-1: #072227;
+  --clr-bg-2: #35858b;
+  /* link */
+  --clr-link-1: #4fbdba;
+  --clr-link-hvr-1: #aefeff;
+  /* typography */
+  --clr-text-1: #e3e3e3;
+  /* colors */
+  --clr-acc-1: #ffafae;
+  --clr-comp-1: #f27d10;
+  --clr-danger-1: #e20e0e;
+  --clr-success-1: #098605;
+  --clr-warn-1: #ccd30b;
+  --clr-info-1: #10c5f2;
+  /* company */
+  --clr-polardot-1: #fd7028;
+  --clr-creatiosoft-1: #007cba;
+  --clr-babel-1: #2262a9;
+  /* blur */
+  --clr-lightblur-bg: hsla(190, 15%, 76%, 0.35);
+  --clr-darkblur-bg: hsla(189, 70%, 9%, 0.35);
+}
+
+/* Common Styles */
+*,
+*::before,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: var(--clr-bg-1);
+  font-family: "Poppins", sans-serif;
+  color: var(--clr-text-1);
+}
+a {
+  text-decoration: none;
+  transition: color 600ms;
+  color: var(--clr-link-hvr-1);
+}
+a:hover {
+  color: var(--clr-text-1) !important;
+}
+button {
+  border: none;
+  color: var(--clr-link-hvr-1);
+  background: var(--clr-bg-2);
+  padding: 0.5rem;
+}
+button:hover {
+  color: var(--clr-text-1);
+}
+ul {
+  list-style: none;
+}
+.accent {
+  color: var(--clr-acc-1);
+}
+.italic {
+  font-style: italic;
+}
+main {
+  margin-inline: auto;
+  max-width: 75%;
+  margin-bottom: 5rem;
+}
+@media only screen and (max-width: 425px) {
+  main {
+    max-width: 93%;
+  }
+}
+@media only screen and (max-width: 1440px) {
+  main {
+    max-width: 85%;
+  }
+}
