@@ -38,7 +38,7 @@
         {work.desc}
       </p>
       <h3>Demo Link:</h3>
-      <a href={work.link}>{work.link}</a>
+      <a href={work.link} target="_blank">{work.link}</a>
     </div>
   </div>
   <!-- <div class="discuss">

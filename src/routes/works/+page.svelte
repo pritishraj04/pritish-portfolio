@@ -1,74 +1,8 @@
 <script>
   import works from "$lib/works";
-  import { fly } from "svelte/transition";
-  let allCategoryFilters = [...new Set(works.map((el) => el.category))];
-  let allTechFilters = [...new Set(works.map((el) => el.tech).flat(1))];
-  let filter = { techFilter: [], categoryFilter: [] };
-  let filteredList = works;
-
-  const refreshList = (type) => {
-    if (filter.techFilter.length === 0 && filter.categoryFilter.length === 0) {
-      filteredList = works;
-    } else {
-      if (type === "category") {
-        for (let i = 0; i < filter.categoryFilter.length; i++) {
-          filteredList = works.filter((e) =>
-            e.category.includes(filter.categoryFilter[i])
-          );
-        }
-        filteredList = filteredList;
-      } else {
-        for (let i = 0; i < filter.techFilter.length; i++) {
-          filteredList = works.filter((e) =>
-            e.tech.includes(filter.techFilter[i])
-          );
-        }
-        filteredList = filteredList;
-      }
-    }
-  };
-
-  const addFilter = (type, fil) => {
-    switch (type) {
-      case "category":
-        if (!filter.categoryFilter.includes(fil)) {
-          filter.categoryFilter = [...filter.categoryFilter, fil];
-          allCategoryFilters = allCategoryFilters.filter((el) => el !== fil);
-          refreshList("category");
-        }
-        break;
-      case "tech":
-        if (!filter.techFilter.includes(fil)) {
-          filter.techFilter = [...filter.techFilter, fil];
-          allTechFilters = allTechFilters.filter((el) => el !== fil);
-          refreshList("tech");
-        }
-        break;
-    }
-  };
-  const removeFilter = (type, fil) => {
-    switch (type) {
-      case "category":
-        for (let i = 0; i < filter.categoryFilter.length; i++) {
-          if (filter.categoryFilter[i] === fil) {
-            filter.categoryFilter.splice(i, 1);
-            refreshList("category");
-          }
-        }
-        allCategoryFilters = [...allCategoryFilters, fil];
-        break;
-      case "tech":
-        for (let i = 0; i < filter.techFilter.length; i++) {
-          if (filter.techFilter[i] === fil) {
-            filter.techFilter.splice(i, 1);
-            refreshList("tech");
-          }
-        }
-        allTechFilters = [...allTechFilters, fil];
-        break;
-    }
-    filter = filter;
-  };
+  import { result } from "$lib/stores";
+  import WorkFilter from "$lib/comps/WorkFilter.svelte";
+  import { fade } from "svelte/transition";
 </script>
 
 <svelte:head>
@@ -84,52 +18,10 @@
     group of 5-8 members in my team as a POC.
   </p>
   <section class="works_system">
-    <div>
-      <h4 class="heading">Filters</h4>
-      {#if allTechFilters.length > 0 || allCategoryFilters.length > 0}
-        <div class="filters">
-          {#each allTechFilters as tech}
-            <button
-              in:fly
-              class="tech"
-              on:click={() => addFilter("tech", tech)}
-              title={`Filter by ${tech}`}>{tech}</button
-            >
-          {/each}
-          {#each allCategoryFilters as category}
-            <button
-              in:fly
-              on:click={() => addFilter("category", category)}
-              class="category"
-              title={`Filter by ${category}`}>{category}</button
-            >
-          {/each}
-        </div>
-      {/if}
-      <h4>
-        Applied filters: {#if filter.techFilter.length === 0 && filter.categoryFilter.length === 0}
-          None
-        {:else}
-          {#each filter.techFilter as item}
-            <button
-              class="tech"
-              in:fly
-              on:click={() => removeFilter("tech", item)}>{item}</button
-            >
-          {/each}
-          {#each filter.categoryFilter as item}
-            <button
-              class="category"
-              in:fly
-              on:click={() => removeFilter("category", item)}>{item}</button
-            >
-          {/each}
-        {/if}
-      </h4>
-    </div>
+    <WorkFilter data={works} />
     <div class="works">
-      {#each filteredList as work}
-        <div class="work-card">
+      {#each $result as work (work.id)}
+        <div class="work-card" transition:fade>
           <a href={`/works/${work.slug}`}>
             <img
               src={work.img
@@ -177,84 +69,10 @@
     font-size: clamp(0.8rem, 1.2vw, 1.925rem);
     margin-bottom: 2rem;
   }
-  main .filters {
-    padding: 0.3rem 0.2rem;
-    background: var(--clr-lightblur-bg);
-    backdrop-filter: blur(10px);
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  main .filters button.tech {
-    margin: 0.2rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-  }
-  main .filters button.tech::after {
-    content: "+";
-    padding-inline: 0.2rem 0.4rem;
-    background: var(--clr-bg-1);
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-    margin-inline: 0.6rem 0.1rem;
-  }
-  main .filters button.category {
-    margin: 0.2rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    background: var(--clr-bg-1);
-    border: 2px var(--clr-text-1) solid;
-    text-transform: capitalize;
-  }
-  main .filters button.category::after {
-    content: "+";
-    padding-inline: 0.2rem 0.4rem;
-    background: var(--clr-link-hvr-1);
-    color: var(--clr-bg-1);
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-    margin-inline: 0.6rem 0.1rem;
-  }
   main .works_system h4 {
     font-size: clamp(1rem, 1.6vw, 2.725rem);
     font-weight: 600;
     margin-bottom: 1.5rem;
-  }
-  main .works_system h4.heading {
-    margin-bottom: 0;
-  }
-  main .works_system h4 button.tech {
-    margin: 0.2rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-  }
-  main .works_system h4 button.tech::after {
-    content: "×";
-    padding-inline: 0.2rem 0.4rem;
-    background: var(--clr-bg-1);
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-    margin-inline: 0.6rem 0.1rem;
-  }
-  main .works_system h4 button.category {
-    margin: 0.2rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    background: var(--clr-bg-1);
-    border: 2px var(--clr-text-1) solid;
-    text-transform: capitalize;
-  }
-  main .works_system h4 button.category::after {
-    content: "×";
-    padding-inline: 0.2rem 0.4rem;
-    background: var(--clr-link-hvr-1);
-    color: var(--clr-bg-1);
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-    margin-inline: 0.6rem 0.1rem;
   }
   main .works_system .works {
     display: grid;
@@ -293,18 +111,6 @@
     font-weight: 400;
     font-size: clamp(1rem, 1.6vw, 2.725rem);
     margin-bottom: 0.2rem;
-  }
-  main .works_system .works .work-card .desc .category {
-    margin-block: 0.4rem;
-    display: block;
-    background: var(--clr-bg-1);
-    display: inline-block;
-    text-transform: capitalize;
-    font-size: clamp(0.7rem, 0.7vw, 1rem);
-    font-weight: 600;
-    border: 2px var(--clr-text-1) solid;
-    border-radius: 0.5rem;
-    padding: 0.2rem;
   }
   main .works_system .works .work-card .desc p {
     font-size: clamp(0.8rem, 0.9vw, 1.925rem);

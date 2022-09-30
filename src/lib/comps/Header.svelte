@@ -5,7 +5,7 @@
 
 <svelte:window bind:innerWidth={x} />
 
-<header>
+<header class={$page.url.pathname == "/" ? "home" : ""}>
   <div class="logo"><a href="/">PR</a></div>
   <a class="skip-to-content-link" href="#main"> Skip to content </a>
   <nav>
@@ -36,6 +36,9 @@
 </header>
 
 <style>
+  .home {
+    padding-inline-end: 1em;
+  }
   .skip-to-content-link {
     background: var(--clr-secondary-bg);
     height: 30px;
